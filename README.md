@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# pruebaubuntu framework
 
-## Getting Started
+Pagina web construida con Next.js, React y TypeScript para ejecutarse en una maquina virtual Ubuntu de Oracle Cloud.
 
-First, run the development server:
+## Ejecutar en local
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre `http://localhost:3000`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Ejecutar en la VM Ubuntu
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Desde la VM `137.131.130.209`:
 
-## Learn More
+```bash
+git clone https://github.com/sebastiansoto1407/pruebaubuntuframework.git
+cd pruebaubuntuframework
+npm install
+npm run build
+npm run start -- -H 0.0.0.0 -p 3000
+```
 
-To learn more about Next.js, take a look at the following resources:
+La pagina quedara disponible en `http://137.131.130.209:3000`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+En Oracle Cloud, crea una regla de entrada TCP para el puerto `3000` en la lista de seguridad o NSG de la subred. Si Ubuntu usa UFW:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+sudo ufw allow 3000/tcp
+sudo ufw reload
+```
 
-## Deploy on Vercel
+## Mantener el proceso activo
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Para una ejecucion persistente, usa PM2:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+sudo npm install -g pm2
+pm2 start npm --name pruebaubuntu -- run start -- -H 0.0.0.0 -p 3000
+pm2 save
+pm2 startup
+```
+
+## Scripts disponibles
+
+```bash
+npm run dev    # desarrollo
+npm run lint   # lint
+npm run build  # build de produccion
+npm run start  # servidor de produccion
+```
